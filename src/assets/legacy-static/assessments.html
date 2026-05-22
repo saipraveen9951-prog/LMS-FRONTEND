@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assessments - SkillForge LMS</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+</head>
+<body>
+<div class="container py-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Assessments</h1>
+        <button class="btn btn-secondary" onclick="logout()">Logout</button>
+    </div>
+
+    <div id="assessmentMessage"></div>
+
+    <section class="panel p-4 mb-4">
+        <h2 class="panel-title">Fetch Quiz</h2>
+        <form id="quizForm" class="row g-3">
+            <div class="col-md-6">
+                <label class="form-label" for="quizId">Quiz ID</label>
+                <input type="number" class="form-control" id="quizId" required>
+            </div>
+            <div class="col-md-6 d-flex align-items-end">
+                <button class="btn btn-primary w-100" type="submit">Load Quiz</button>
+            </div>
+        </form>
+    </section>
+
+    <section class="panel p-4" id="quizPanel" style="display:none;">
+        <h2 class="panel-title" id="quizTitle"></h2>
+        <p id="quizDescription"></p>
+        <form id="submissionForm"></form>
+    </section>
+</div>
+<script src="js/app.js"></script>
+<script>
+    function renderQuiz(quiz) {
+        document.getElementById('quizPanel').style.display = 'block';
+        document.getElementById('quizTitle').textContent = `${quiz.title} (${quiz.passingScore}% passing)`;
+        document.getElementById('quizDescription').textContent = quiz.description || '';
+        const form = document.getElementById('submissionForm');
+        form.innerHTML = quiz.questions.map(question => {
+            const options = question.options.map(option => `
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="question-${question.id}" id="option-${option.id}" value="${option.id}" required>
+                    <label class="form-check-label" for="option-${option.id}">${escapeHtml(option.text)}</label>
+                </div>
+            `).join('');
+            return `
+                <div class="mb-4">
+                    <h5>${escapeHtml(question.text)} <small class="text-muted">(${question.marks} pts)</small></h5>
+                    ${options}
+                </div>
+            `;
+        }).join('');
+        form.innerHTML += `
+            <button class="btn btn-primary" type="submit">Submit Answers</button>
+        `;
+    }
+
+    async function loadQuiz(quizId) {
+        try {
+            if (!ensureRole('EMPLOYEE')) return;
+            const quiz = await api.get(`/api/quizzes/detail/${quizId}`);
+            renderQuiz(quiz);
+        } catch (error) {
+            showMessage('assessmentMessage', error.message, 'danger');
+        }
+    }
+
+    async function submitQuiz(quizId) {
+        const form = document.getElementById('submissionForm');
+        const answers = {};
+        const radios = form.querySelectorAll('input[type="radio"]:checked');
+        radios.forEach((radio) => {
+            const questionId = radio.name.split('-')[1];
+            answers[questionId] = Number(radio.value);
+        });
+        try {
+            const payload = {
+                quizId: Number(quizId),
+                employeeEmail: localStorage.getItem('currentEmail'),
+                answers
+            };
+            const result = await api.post('/api/employee/quizzes/submissions', payload);
+            showMessage('assessmentMessage', `Score: ${result.score} | ${result.passed ? 'Passed' : 'Failed'}`, result.passed ? 'success' : 'warning');
+        } catch (error) {
+            showMessage('assessmentMessage', error.message, 'danger');
+        }
+    }
+
+    document.getElementById('quizForm').addEventListener('submit', async (event) => {
+        event.preventDefault();
+        const quizId = Number(document.getElementById('quizId').value);
+        await loadQuiz(quizId);
+    });
+
+    document.getElementById('submissionForm').addEventListener('submit', async (event) => {
+        event.preventDefault();
+        const quizId = Number(document.getElementById('quizId').value);
+        await submitQuiz(quizId);
+    });
+</script>
+</body>
+</html>

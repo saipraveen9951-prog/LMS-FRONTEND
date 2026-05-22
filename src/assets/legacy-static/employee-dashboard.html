@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employee Dashboard - EduPro LMS</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+</head>
+<body>
+<div class="app-shell">
+    <aside class="sidebar">
+        <a class="brand" href="employee-dashboard.html">
+            <span class="brand-mark">▱</span>
+            <span>
+                <span class="brand-title d-block">EduPro</span>
+                <span class="brand-subtitle">Enterprise Academy</span>
+            </span>
+        </a>
+        <nav class="nav-list">
+            <a class="nav-item active" href="employee-dashboard.html"><span class="nav-icon">▦</span>Dashboard</a>
+            <a class="nav-item" href="users.html"><span class="nav-icon">♙</span>Employees</a>
+            <a class="nav-item" href="courses.html"><span class="nav-icon">▤</span>Courses</a>
+            <a class="nav-item" href="assessments.html"><span class="nav-icon">▣</span>Assessments</a>
+            <a class="nav-item" href="certificates.html"><span class="nav-icon">▥</span>Certificates</a>
+        </nav>
+        <div class="nav-bottom">
+            <a class="nav-item" href="employee-dashboard.html"><span class="nav-icon">⚙</span>Profile</a>
+            <button class="nav-item logout border-0 w-100 text-start" onclick="logout()"><span class="nav-icon">↪</span>Logout</button>
+        </div>
+    </aside>
+
+    <main class="main">
+        <header class="topbar">
+            <nav class="d-flex gap-4 fw-bold">
+                <a href="employee-dashboard.html">Dashboard</a>
+                <a href="courses.html" class="text-dark">Courses</a>
+                <a href="assessments.html" class="text-dark">Assessments</a>
+            </nav>
+            <div class="top-actions">
+                <button class="icon-btn" title="Notifications">♢</button>
+                <button class="icon-btn" title="Help">?</button>
+                <span class="avatar" id="profileAvatar">U</span>
+            </div>
+        </header>
+
+        <section class="page">
+            <div id="employeeMessage"></div>
+            <div class="page-head">
+                <div>
+                    <h1 id="welcomeTitle">Welcome back</h1>
+                    <p class="page-subtitle">You've completed 75% of your quarterly learning targets. Keep it up!</p>
+                </div>
+            </div>
+
+            <div class="dashboard-grid">
+                <section class="panel hero-course">
+                    <span class="pill">Continue Learning</span>
+                    <h2 class="display-6 fw-bold mt-4 mb-3">Advanced Data Security & Compliance</h2>
+                    <p class="fs-5 col-lg-9">Module 4: Incident Response Frameworks and Reporting Procedures for Corporate Infrastructure.</p>
+                    <div class="mt-5">
+                        <div class="progress-label"><strong>68% Complete</strong><span>Next: Security Protocols</span></div>
+                        <div class="progress-track"><div class="progress-fill" style="--value: 68%;"></div></div>
+                    </div>
+                    <button class="btn btn-primary mt-4 px-5">Resume Course ▷</button>
+                </section>
+
+                <aside class="panel">
+                    <h2 class="panel-title d-flex justify-content-between">Upcoming Assessments <span>▣</span></h2>
+                    <div class="d-flex gap-3 mb-4">
+                        <span class="pill warn">OCT<br>24</span>
+                        <div><strong>Q3 Compliance Review</strong><div>Time limit: 45 mins</div></div>
+                    </div>
+                    <div class="d-flex gap-3 mb-5">
+                        <span class="pill">NOV<br>02</span>
+                        <div><strong>Leadership Fundamentals</strong><div>Self-paced practical</div></div>
+                    </div>
+                    <button class="btn btn-outline-primary w-100" onclick="window.location.href='assessments.html'">View All Assessments</button>
+                </aside>
+            </div>
+
+            <div class="d-flex justify-content-between align-items-center mt-5 mb-4">
+                <h2 class="panel-title mb-0">Assigned Courses</h2>
+                <a href="courses.html">See Full Catalog →</a>
+            </div>
+            <div id="assignedCourses" class="course-grid"></div>
+
+            <div class="dashboard-grid mt-5">
+                <section class="panel">
+                    <h2 class="panel-title">Your Profile</h2>
+                    <form id="profileForm" class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label" for="firstName">First name</label>
+                            <input class="form-control" id="firstName" name="firstName" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label" for="lastName">Last name</label>
+                            <input class="form-control" id="lastName" name="lastName" required>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label" for="departmentName">Department</label>
+                            <input class="form-control" id="departmentName" name="departmentName">
+                        </div>
+                        <div class="col-12">
+                            <div id="profileMeta" class="small text-muted mb-3"></div>
+                            <button class="btn btn-primary" type="submit">Update Profile</button>
+                        </div>
+                    </form>
+                    <h2 class="panel-title mt-5">Certificates Earned</h2>
+                    <div class="row g-3 text-center">
+                        <div class="col-6"><div class="filter-card py-5"><div class="display-4 text-primary">✺</div></div><strong>GDPR Basics</strong><div class="small">Sep 2023</div></div>
+                        <div class="col-6"><div class="filter-card py-5"><div class="display-4 text-primary">✺</div></div><strong>Team Dynamics</strong><div class="small">Aug 2023</div></div>
+                    </div>
+                </section>
+
+                <aside class="panel">
+                    <h2 class="panel-title">Recommended for You</h2>
+                    <div class="recommend-list">
+                        <div class="recommend-item"><span class="icon-tile">♧</span><div><strong>Introduction to Design Thinking</strong><div>Based on your role interest</div></div><a href="#">›</a></div>
+                        <div class="recommend-item"><span class="icon-tile">↗</span><div><strong>Strategic Thinking for Leads</strong><div>Most popular in Engineering</div></div><a href="#">›</a></div>
+                        <div class="recommend-item"><span class="icon-tile">♙</span><div><strong>Inclusive Leadership</strong><div>Trending at EduPro</div></div><a href="#">›</a></div>
+                    </div>
+                </aside>
+            </div>
+
+            <section class="panel p-0 mt-5">
+                <div class="p-4">
+                    <h2 class="panel-title mb-0">Enrollment Progress</h2>
+                </div>
+                <div class="table-scroll">
+                    <table class="data-table">
+                        <thead>
+                        <tr>
+                            <th>Course</th>
+                            <th>Status</th>
+                            <th>Progress</th>
+                            <th>Update</th>
+                        </tr>
+                        </thead>
+                        <tbody id="enrollmentTable"></tbody>
+                    </table>
+                </div>
+            </section>
+        </section>
+    </main>
+</div>
+
+<script src="js/app.js"></script>
+<script>
+    let profile = null;
+    const assignedImages = [
+        'url("https://images.unsplash.com/photo-1556761175-4b46a572b786?auto=format&fit=crop&w=800&q=80")',
+        'url("https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=800&q=80")',
+        'url("https://images.unsplash.com/photo-1521791136064-7986c2920216?auto=format&fit=crop&w=800&q=80")'
+    ];
+
+    async function loadProfile() {
+        try {
+            if (!ensureRole('EMPLOYEE')) {
+                showMessage('employeeMessage', 'Employee login is required for this dashboard.', 'warning');
+                return;
+            }
+            profile = await api.get('/api/employee/profile');
+            document.getElementById('firstName').value = profile.firstName || '';
+            document.getElementById('lastName').value = profile.lastName || '';
+            document.getElementById('departmentName').value = profile.departmentName || '';
+            document.getElementById('profileMeta').innerText = `${profile.email} | ${profile.role}`;
+            document.getElementById('welcomeTitle').innerText = `Welcome back, ${profile.firstName || 'Learner'}`;
+            document.getElementById('profileAvatar').innerText = `${profile.firstName?.[0] || 'U'}${profile.lastName?.[0] || ''}`;
+            const enrollments = await api.get(`/api/employee/${profile.id}/enrollments`);
+            renderAssignedCourses(enrollments);
+            const tbody = document.getElementById('enrollmentTable');
+            tbody.innerHTML = enrollments.length ? enrollments.map(item => `
+                <tr>
+                    <td>${escapeHtml(item.courseTitle)}</td>
+                    <td><span class="pill">${escapeHtml(item.status)}</span></td>
+                    <td>${item.completedModules}/${item.totalModules}</td>
+                    <td>
+                        <div class="input-group input-group-sm progress-control">
+                            <input class="form-control" type="number" min="0" max="${item.totalModules}" value="${item.completedModules}" id="progress-${item.id}">
+                            <button class="btn btn-outline-primary" onclick="updateProgress(${item.id})">Save</button>
+                        </div>
+                    </td>
+                </tr>
+            `).join('') : '<tr><td colspan="4" class="text-muted">No enrollments assigned yet.</td></tr>';
+        } catch (error) {
+            showMessage('employeeMessage', error.message, 'danger');
+        }
+    }
+
+    function renderAssignedCourses(enrollments) {
+        const container = document.getElementById('assignedCourses');
+        const rows = enrollments.length ? enrollments.slice(0, 3) : [
+            { courseTitle: 'Mastering Agile Project Management', completedModules: 0, totalModules: 6 },
+            { courseTitle: 'Intro to PowerBI for Executives', completedModules: 0, totalModules: 8 },
+            { courseTitle: 'Effective Workplace Communication', completedModules: 0, totalModules: 5 }
+        ];
+        container.innerHTML = rows.map((item, index) => `
+            <article class="course-card">
+                <div class="course-media" style="--img: ${assignedImages[index % assignedImages.length]};"></div>
+                <div class="course-body">
+                    <div class="course-meta"><span>${['Management', 'Tech & Data', 'Soft Skills'][index % 3]}</span></div>
+                    <h2 class="course-title">${escapeHtml(item.courseTitle)}</h2>
+                    <hr>
+                    <div class="d-flex justify-content-between">
+                        <span>◷ ${Math.max(item.totalModules || 1, 1)}h ${(index + 1) * 15}m</span>
+                        <a href="courses.html">Start Learning</a>
+                    </div>
+                </div>
+            </article>
+        `).join('');
+    }
+
+    async function updateProgress(enrollmentId) {
+        const completedModules = Number(document.getElementById(`progress-${enrollmentId}`).value);
+        try {
+            await api.put('/api/employee/enrollments/progress', { enrollmentId, completedModules });
+            showMessage('employeeMessage', 'Progress updated.', 'success');
+            await loadProfile();
+        } catch (error) {
+            showMessage('employeeMessage', error.message, 'danger');
+        }
+    }
+
+    document.getElementById('profileForm').addEventListener('submit', async (event) => {
+        event.preventDefault();
+        const data = formData(event.currentTarget);
+        try {
+            await api.put('/api/employee/profile', {
+                firstName: data.firstName,
+                lastName: data.lastName,
+                departmentName: data.departmentName || null,
+                enabled: true
+            });
+            showMessage('employeeMessage', 'Profile updated.', 'success');
+            await loadProfile();
+        } catch (error) {
+            showMessage('employeeMessage', error.message, 'danger');
+        }
+    });
+
+    loadProfile();
+</script>
+</body>
+</html>
