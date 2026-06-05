@@ -1,0 +1,40 @@
+<h2 class="page-title">Certificates</h2>
+<div class="alert alert-danger" *ngIf="error">{{ error }}</div>
+<div class="alert alert-success" *ngIf="message">{{ message }}</div>
+
+<form class="content-card certificate-form" [formGroup]="form" (ngSubmit)="generate()">
+  <label class="form-label">Select Course</label>
+  <select class="form-select mb-3" formControlName="enrollmentId" (change)="onCourseChange()" [disabled]="isLoadingCourses">
+    <option [ngValue]="null">{{ isLoadingCourses ? 'Loading enrolled courses...' : 'Choose an enrolled course' }}</option>
+    <option *ngFor="let course of courses" [ngValue]="course.enrollmentId">
+      {{ course.courseName }} - {{ course.completed ? 'Completed' : 'In Progress' }} ({{ course.progressLabel }})
+    </option>
+  </select>
+  <div class="text-muted mb-3" *ngIf="!isLoadingCourses && !courses.length">
+    No enrolled courses found.
+  </div>
+
+  <label class="form-label">Recipient Name</label>
+  <input class="form-control mb-3" type="text" formControlName="recipientName" readonly>
+
+  <label class="form-label">Course Name</label>
+  <input class="form-control mb-3" type="text" formControlName="courseName" readonly>
+
+  <label class="form-label">Completion Date</label>
+  <input class="form-control mb-3" type="date" formControlName="completionDate" readonly>
+
+  <label class="form-label">Certificate ID</label>
+  <input class="form-control mb-3" type="text" formControlName="certificateId" readonly>
+
+  <label class="form-label">Trainer Signature Name</label>
+  <input class="form-control mb-4" type="text" formControlName="trainerName" readonly>
+
+  <div class="certificate-actions">
+    <button class="btn btn-primary" type="submit" [disabled]="isGenerating || isLoadingDetails || form.controls.enrollmentId.invalid">
+      {{ isGenerating ? 'Generating...' : 'Generate Certificate' }}
+    </button>
+    <button class="btn btn-outline-secondary" type="button" (click)="downloadCertificate()" [disabled]="!generated">
+      Download PDF
+    </button>
+  </div>
+</form>

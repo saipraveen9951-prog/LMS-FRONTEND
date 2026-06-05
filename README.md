@@ -1,58 +1,50 @@
 # SkillForge LMS Frontend
 
-Angular frontend for SkillForge LMS.
+Simple Angular frontend for the Employee Learning Management System.
 
-## Correct Project Folder
+This frontend is backend-driven. It only contains screens for endpoints found in the existing backend-facing implementation:
 
-Run all frontend commands from this folder:
+- `POST /api/auth/login`
+- `POST /api/auth/register`
+- `GET /api/admin/dashboard`
+- `GET /api/admin/employees`
+- `GET /api/admin/trainers`
+- `GET|POST|PUT|DELETE /api/admin/departments`
+- `GET /api/courses`
+- `POST|PUT|DELETE /api/admin/courses`
+- `GET /api/courses/{courseId}/modules`
+- `POST /api/admin/courses/{courseId}/modules`
+- `POST /api/admin/enrollments`
+- `GET /api/courses/{courseId}/enrollments`
+- `GET|PUT /api/employee/profile`
+- `GET /api/employee/{employeeId}/enrollments`
+- `PUT /api/employee/enrollments/progress`
+- `GET /api/quizzes/detail/{quizId}`
+- `POST /api/trainer/quizzes`
+- `GET /api/quizzes/{moduleId}`
+- `POST /api/employee/quizzes/submissions`
+- `POST /api/employee/certificates/generate/{enrollmentId}`
+- `POST /api/trainer/modules/upload`
+- Admin reports and notifications endpoints from the backend contract.
 
-```powershell
-cd "C:\Users\Ananda (Angular)\Downloads\skillforge-lms-frontend-20260522T045712Z-3-001\skillforge-lms-frontend\frontend-angular"
-```
+## Run
 
-This is the folder that contains `package.json`, `angular.json`, and `src`.
-
-## Run With Java Backend
-
-Start the Java backend first and make sure it is listening on:
+Start the Spring Boot backend on:
 
 ```text
 http://localhost:8080
 ```
 
-Then start Angular:
+Then run Angular from this folder:
 
 ```powershell
-npm start
+npm run start
 ```
 
-Open the frontend at:
+Open:
 
 ```text
 http://localhost:4300
 ```
 
-API calls made to `/api/...` are proxied to:
-
-```text
-http://localhost:8080/api/...
-```
-
-## Structure
-
-```text
-frontend-angular/
-  angular.json
-  package.json
-  proxy.conf.json
-  src/
-    app/
-      core/
-      modules/
-      shared/
-    assets/
-      legacy-static/
-    environments/
-```
-
-`src/assets/legacy-static` contains the old standalone HTML/CSS/JS files for reference. The active Angular app runs from `src/app`.
+API requests go through `proxy.conf.json` from `/api` to `http://localhost:8080`.

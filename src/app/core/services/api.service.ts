@@ -9,6 +9,9 @@ export class ApiService {
 
   get<T>(path: string): Observable<T> { return this.http.get<T>(this.url(path)); }
   post<T>(path: string, body: any): Observable<T> { return this.http.post<T>(this.url(path), body); }
+  put<T>(path: string, body: any): Observable<T> { return this.http.put<T>(this.url(path), body); }
+  delete<T>(path: string): Observable<T> { return this.http.delete<T>(this.url(path)); }
+  upload<T>(path: string, body: FormData): Observable<T> { return this.http.post<T>(this.url(path), body); }
 
   private url(path: string): string {
     const cleanPath = path.startsWith('/') ? path.slice(1) : path;

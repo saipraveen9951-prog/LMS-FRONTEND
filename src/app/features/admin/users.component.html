@@ -1,0 +1,61 @@
+<h2 class="page-title">Users</h2>
+<p class="text-muted">Uses employees, trainers, departments, update, and delete backend APIs.</p>
+<div class="alert alert-danger" *ngIf="error">{{ error }}</div>
+<div class="alert alert-success" *ngIf="message">{{ message }}</div>
+
+<div class="row g-3">
+  <div class="col-lg-8">
+    <div class="content-card mb-3">
+      <h3 class="h5">Employees</h3>
+      <div class="table-responsive">
+        <table class="table table-sm">
+          <thead><tr><th>Name</th><th>Email</th><th>Department</th><th>Status</th><th></th></tr></thead>
+          <tbody>
+            <tr *ngFor="let user of employees">
+              <td>{{ user.firstName }} {{ user.lastName }}</td>
+              <td>{{ user.email }}</td>
+              <td>{{ user.departmentName || 'Unassigned' }}</td>
+              <td>{{ user.enabled ? 'Active' : 'Disabled' }}</td>
+              <td class="text-end"><button class="btn btn-sm btn-outline-primary me-1" (click)="edit(user)">Edit</button><button class="btn btn-sm btn-outline-danger" (click)="delete(user)">Delete</button></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="content-card">
+      <h3 class="h5">Trainers</h3>
+      <div class="table-responsive">
+        <table class="table table-sm">
+          <thead><tr><th>Name</th><th>Email</th><th>Department</th><th>Status</th><th></th></tr></thead>
+          <tbody>
+            <tr *ngFor="let user of trainers">
+              <td>{{ user.firstName }} {{ user.lastName }}</td>
+              <td>{{ user.email }}</td>
+              <td>{{ user.departmentName || 'Unassigned' }}</td>
+              <td>{{ user.enabled ? 'Active' : 'Disabled' }}</td>
+              <td class="text-end"><button class="btn btn-sm btn-outline-primary me-1" (click)="edit(user)">Edit</button><button class="btn btn-sm btn-outline-danger" (click)="delete(user)">Delete</button></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-4">
+    <form class="content-card" [formGroup]="form" (ngSubmit)="save()">
+      <h3 class="h5">Edit User</h3>
+      <p class="text-muted small" *ngIf="!selected">Select a user from the table.</p>
+      <input class="form-control mb-2" formControlName="firstName" placeholder="First name">
+      <input class="form-control mb-2" formControlName="lastName" placeholder="Last name">
+      <select class="form-select mb-2" formControlName="departmentName">
+        <option value="">Unassigned</option>
+        <option *ngFor="let department of departments" [value]="department.name">{{ department.name }}</option>
+      </select>
+      <select class="form-select mb-3" formControlName="enabled">
+        <option [ngValue]="true">Active</option>
+        <option [ngValue]="false">Disabled</option>
+      </select>
+      <button class="btn btn-primary w-100" type="submit" [disabled]="!selected">Save</button>
+    </form>
+  </div>
+</div>

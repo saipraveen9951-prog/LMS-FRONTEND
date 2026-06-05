@@ -1,0 +1,83 @@
+<h2 class="page-title">Manage Assessments</h2>
+<p class="text-muted">MCQ quizzes connected to the backend assessment APIs.</p>
+
+<div class="alert alert-danger" *ngIf="error">{{ error }}</div>
+<div class="alert alert-success" *ngIf="message">{{ message }}</div>
+
+<div class="row g-3">
+  <div class="col-lg-7">
+    <form class="content-card" [formGroup]="quizForm" (ngSubmit)="submit()">
+      <h3 class="h5">Create Quiz</h3>
+
+      <div class="row g-3">
+        <div class="col-md-4">
+          <label class="form-label">Course Module ID</label>
+          <input class="form-control" type="number" formControlName="courseModuleId">
+        </div>
+        <div class="col-md-5">
+          <label class="form-label">Title</label>
+          <input class="form-control" formControlName="title">
+        </div>
+        <div class="col-md-3">
+          <label class="form-label">Passing Score</label>
+          <input class="form-control" type="number" formControlName="passingScore">
+        </div>
+        <div class="col-12">
+          <label class="form-label">Description</label>
+          <textarea class="form-control" rows="2" formControlName="description"></textarea>
+        </div>
+      </div>
+
+      <div formArrayName="questions" class="mt-3">
+        <div class="border rounded p-3 mb-3" *ngFor="let question of questions.controls; let questionIndex = index" [formGroupName]="questionIndex">
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <h4 class="h6 mb-0">Question {{ questionIndex + 1 }}</h4>
+            <button class="btn btn-sm btn-outline-danger" type="button" (click)="removeQuestion(questionIndex)">Remove</button>
+          </div>
+
+          <label class="form-label">Question text</label>
+          <input class="form-control mb-2" formControlName="text">
+
+          <label class="form-label">Marks</label>
+          <input class="form-control mb-3" type="number" formControlName="marks">
+
+          <div formArrayName="options">
+            <label class="form-label">Options</label>
+            <div class="input-group mb-2" *ngFor="let option of options(questionIndex).controls; let optionIndex = index" [formGroupName]="optionIndex">
+              <div class="input-group-text">
+                <input class="form-check-input mt-0" type="radio" [name]="'correct-' + questionIndex" [checked]="option.value.correct" (change)="markCorrect(questionIndex, optionIndex)" aria-label="Correct option">
+              </div>
+              <input class="form-control" formControlName="text" [placeholder]="'Option ' + (optionIndex + 1)">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <button class="btn btn-outline-secondary me-2" type="button" (click)="addQuestion()">Add Question</button>
+      <button class="btn btn-primary" type="submit">Create Quiz</button>
+    </form>
+  </div>
+
+  <div class="col-lg-5">
+    <form class="content-card mb-3" [formGroup]="lookupForm" (ngSubmit)="listQuizzes()">
+      <h3 class="h5">List Quizzes By Module</h3>
+      <label class="form-label">Course Module ID</label>
+      <div class="input-group">
+        <input class="form-control" type="number" formControlName="moduleId">
+        <button class="btn btn-primary" type="submit">Load</button>
+      </div>
+    </form>
+
+    <div class="content-card">
+      <h3 class="h5">Quizzes</h3>
+      <div class="list-group">
+        <div class="list-group-item" *ngFor="let quiz of quizzes">
+          <div class="fw-semibold">{{ quiz.title }}</div>
+          <div class="small text-muted">ID: {{ quiz.id }} | Passing Score: {{ quiz.passingScore }}%</div>
+          <div class="small">{{ quiz.description }}</div>
+        </div>
+        <div class="text-muted" *ngIf="!quizzes.length">No quizzes loaded.</div>
+      </div>
+    </div>
+  </div>
+</div>

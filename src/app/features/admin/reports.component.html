@@ -1,0 +1,18 @@
+<h2 class="page-title">Reports</h2>
+<div class="alert alert-danger" *ngIf="error">{{ error }}</div>
+
+<div class="content-card mb-3">
+  <div class="row g-2 align-items-end">
+    <div class="col-md-4" [formGroup]="form">
+      <label class="form-label">Employee ID</label>
+      <input class="form-control" type="number" formControlName="employeeId">
+    </div>
+    <div class="col-md-8">
+      <button class="btn btn-primary me-2" type="button" (click)="employeeReport()">Employee Report</button>
+      <button class="btn btn-outline-primary me-2" type="button" (click)="departmentReports()">Department Reports</button>
+      <button class="btn btn-outline-primary" type="button" (click)="completionReports()">Course Completion</button>
+    </div>
+  </div>
+</div>
+
+<pre class="content-card" *ngIf="report">{{ asJson(report) }}</pre>

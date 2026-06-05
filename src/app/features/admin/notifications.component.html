@@ -1,0 +1,18 @@
+<h2 class="page-title">System Notifications</h2>
+<div class="alert alert-danger" *ngIf="error">{{ error }}</div>
+<div class="alert alert-success" *ngIf="message">{{ message }}</div>
+
+<form class="content-card" [formGroup]="form" (ngSubmit)="send()">
+  <label class="form-label">Subject</label>
+  <input class="form-control mb-3" formControlName="subject">
+  <label class="form-label">Message</label>
+  <textarea class="form-control mb-3" rows="4" formControlName="message"></textarea>
+  <label class="form-label">Role</label>
+  <select class="form-select mb-3" formControlName="role">
+    <option value="">All</option>
+    <option value="ADMIN">ADMIN</option>
+    <option value="TRAINER">TRAINER</option>
+    <option value="EMPLOYEE">EMPLOYEE</option>
+  </select>
+  <button class="btn btn-primary" type="submit">Send</button>
+</form>

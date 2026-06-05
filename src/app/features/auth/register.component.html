@@ -1,0 +1,58 @@
+<main class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+      <div class="content-card">
+        <h1 class="page-title mb-1">Register Account</h1>
+        <p class="text-muted mb-4">Create a user using the backend registration API.</p>
+
+        <div class="alert alert-danger" *ngIf="error">{{ error }}</div>
+        <div class="alert alert-success" *ngIf="message">{{ message }}</div>
+
+        <form [formGroup]="form" (ngSubmit)="submit()" novalidate>
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label class="form-label" for="firstName">First name</label>
+              <input id="firstName" class="form-control" formControlName="firstName">
+            </div>
+            <div class="col-md-6">
+              <label class="form-label" for="lastName">Last name</label>
+              <input id="lastName" class="form-control" formControlName="lastName">
+            </div>
+            <div class="col-12">
+              <label class="form-label" for="email">Email</label>
+              <input id="email" class="form-control" type="email" formControlName="email">
+            </div>
+            <div class="col-12">
+              <label class="form-label" for="password">Password</label>
+              <input id="password" class="form-control" type="password" formControlName="password">
+            </div>
+            <div class="col-md-6">
+              <label class="form-label" for="role">Role</label>
+              <select id="role" class="form-select" formControlName="role">
+                <option value="EMPLOYEE">Employee</option>
+                <option value="TRAINER">Trainer</option>
+                <option value="ADMIN">Admin</option>
+              </select>
+            </div>
+            <div class="col-md-6" *ngIf="departments.length">
+              <label class="form-label" for="departmentId">Department</label>
+              <select id="departmentId" class="form-select" formControlName="departmentId">
+                <option [ngValue]="null">Unassigned</option>
+                <option *ngFor="let department of departments" [ngValue]="department.id">{{ department.name }}</option>
+              </select>
+            </div>
+          </div>
+
+          <button class="btn btn-primary w-100 mt-4" type="submit" [disabled]="loading">
+            <span class="spinner-border spinner-border-sm me-2" *ngIf="loading"></span>
+            Register
+          </button>
+        </form>
+
+        <div class="text-center mt-3">
+          <a routerLink="/login">Already have an account?</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>

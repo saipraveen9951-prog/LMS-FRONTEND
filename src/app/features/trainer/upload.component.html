@@ -1,0 +1,10 @@
+<h2 class="page-title">Upload Materials</h2>
+<p class="text-muted">Backend endpoint: <code>POST /api/trainer/modules/upload</code></p>
+<div class="alert alert-danger" *ngIf="error">{{ error }}</div>
+<div class="alert alert-success" *ngIf="message">{{ message }}</div>
+
+<div class="content-card">
+  <label class="form-label">Material file</label>
+  <input class="form-control mb-3" type="file" (change)="chooseFile($event)">
+  <button class="btn btn-primary" type="button" (click)="upload()">Upload</button>
+</div>

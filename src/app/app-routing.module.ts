@@ -1,28 +1,35 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { AuthGuard } from './core/guards/auth.guard';
+import { ShellComponent } from './layout/shell.component';
 
 const routes: Routes = [
-  { path: 'index.html', loadComponent: () => import('./legacy-redirect.component').then(m => m.LegacyRedirectComponent), data: { page: 'index.html' } },
-  { path: 'login.html', loadComponent: () => import('./legacy-redirect.component').then(m => m.LegacyRedirectComponent), data: { page: 'login.html' } },
-  { path: 'register.html', loadComponent: () => import('./legacy-redirect.component').then(m => m.LegacyRedirectComponent), data: { page: 'register.html' } },
-  { path: 'admin-dashboard.html', loadComponent: () => import('./legacy-redirect.component').then(m => m.LegacyRedirectComponent), data: { page: 'admin-dashboard.html' } },
-  { path: 'employee-dashboard.html', loadComponent: () => import('./legacy-redirect.component').then(m => m.LegacyRedirectComponent), data: { page: 'employee-dashboard.html' } },
-  { path: 'courses.html', loadComponent: () => import('./legacy-redirect.component').then(m => m.LegacyRedirectComponent), data: { page: 'courses.html' } },
-  { path: 'users.html', loadComponent: () => import('./legacy-redirect.component').then(m => m.LegacyRedirectComponent), data: { page: 'users.html' } },
-  { path: 'departments.html', loadComponent: () => import('./legacy-redirect.component').then(m => m.LegacyRedirectComponent), data: { page: 'departments.html' } },
-  { path: 'upload.html', loadComponent: () => import('./legacy-redirect.component').then(m => m.LegacyRedirectComponent), data: { page: 'upload.html' } },
-  { path: 'notifications.html', loadComponent: () => import('./legacy-redirect.component').then(m => m.LegacyRedirectComponent), data: { page: 'notifications.html' } },
-  { path: 'reports.html', loadComponent: () => import('./legacy-redirect.component').then(m => m.LegacyRedirectComponent), data: { page: 'reports.html' } },
-  { path: 'assessments.html', loadComponent: () => import('./legacy-redirect.component').then(m => m.LegacyRedirectComponent), data: { page: 'assessments.html' } },
-  { path: 'certificates.html', loadComponent: () => import('./legacy-redirect.component').then(m => m.LegacyRedirectComponent), data: { page: 'certificates.html' } },
-  { path: '', loadChildren: () => import('./modules/dashboard/dashboard.module').then(m => m.DashboardModule) },
-  { path: 'auth', loadChildren: () => import('./modules/auth/auth.module').then(m => m.AuthModule) },
-  { path: 'courses', loadChildren: () => import('./modules/courses/courses.module').then(m => m.CoursesModule) },
+  { path: 'login', loadComponent: () => import('./features/auth/login.component').then(m => m.LoginComponent) },
+  { path: 'register', loadComponent: () => import('./features/auth/register.component').then(m => m.RegisterComponent) },
+  {
+    path: '',
+    component: ShellComponent,
+    canActivate: [AuthGuard],
+    children: [
+      { path: '', loadComponent: () => import('./features/home/home-redirect.component').then(m => m.HomeRedirectComponent) },
+      { path: 'admin', canActivate: [AuthGuard], data: { roles: ['ADMIN'] }, loadComponent: () => import('./features/admin/admin-dashboard.component').then(m => m.AdminDashboardComponent) },
+      { path: 'admin/users', canActivate: [AuthGuard], data: { roles: ['ADMIN'] }, loadComponent: () => import('./features/admin/users.component').then(m => m.UsersComponent) },
+      { path: 'admin/departments', canActivate: [AuthGuard], data: { roles: ['ADMIN'] }, loadComponent: () => import('./features/admin/departments.component').then(m => m.DepartmentsComponent) },
+      { path: 'admin/notifications', canActivate: [AuthGuard], data: { roles: ['ADMIN'] }, loadComponent: () => import('./features/admin/notifications.component').then(m => m.NotificationsComponent) },
+      { path: 'admin/reports', canActivate: [AuthGuard], data: { roles: ['ADMIN'] }, loadComponent: () => import('./features/admin/reports.component').then(m => m.ReportsComponent) },
+      { path: 'courses', loadComponent: () => import('./features/courses/courses.component').then(m => m.CoursesComponent) },
+      { path: 'trainer/upload', canActivate: [AuthGuard], data: { roles: ['TRAINER'] }, loadComponent: () => import('./features/trainer/upload.component').then(m => m.UploadComponent) },
+      { path: 'trainer/assessments', canActivate: [AuthGuard], data: { roles: ['ADMIN', 'TRAINER'] }, loadComponent: () => import('./features/trainer/quiz-builder.component').then(m => m.QuizBuilderComponent) },
+      { path: 'employee', canActivate: [AuthGuard], data: { roles: ['EMPLOYEE'] }, loadComponent: () => import('./features/employee/employee-dashboard.component').then(m => m.EmployeeDashboardComponent) },
+      { path: 'assessments', canActivate: [AuthGuard], data: { roles: ['EMPLOYEE'] }, loadComponent: () => import('./features/employee/assessment.component').then(m => m.AssessmentComponent) },
+      { path: 'certificates', canActivate: [AuthGuard], data: { roles: ['EMPLOYEE'] }, loadComponent: () => import('./features/employee/certificates.component').then(m => m.CertificatesComponent) }
+    ]
+  },
   { path: '**', redirectTo: '' }
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes, { useHash: false })],
+  imports: [RouterModule.forRoot(routes)],
   exports: [RouterModule]
 })
-export class AppRoutingModule { }
+export class AppRoutingModule {}
