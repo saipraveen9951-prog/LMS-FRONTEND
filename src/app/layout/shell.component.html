@@ -8,19 +8,46 @@
         <a *ngIf="role === 'ADMIN'" routerLink="/admin/users" routerLinkActive="active">Users</a>
         <a *ngIf="role === 'ADMIN'" routerLink="/admin/departments" routerLinkActive="active">Departments</a>
         <a *ngIf="role === 'ADMIN'" routerLink="/admin/reports" routerLinkActive="active">Reports</a>
-        <a *ngIf="role === 'ADMIN'" routerLink="/admin/notifications" routerLinkActive="active">Notifications</a>
+        <a *ngIf="role === 'ADMIN'" routerLink="/admin/notifications" routerLinkActive="active">Send Notifications</a>
         <a routerLink="/courses" routerLinkActive="active">Courses</a>
         <a *ngIf="role === 'TRAINER'" routerLink="/trainer/upload" routerLinkActive="active">Upload Materials</a>
         <a *ngIf="role === 'TRAINER' || role === 'ADMIN'" routerLink="/trainer/assessments" routerLinkActive="active">Manage Assessments</a>
         <a *ngIf="role === 'EMPLOYEE'" routerLink="/employee" routerLinkActive="active">My Learning</a>
         <a *ngIf="role === 'EMPLOYEE'" routerLink="/assessments" routerLinkActive="active">Assessments</a>
         <a *ngIf="role === 'EMPLOYEE'" routerLink="/certificates" routerLinkActive="active">Certificates</a>
+        <a routerLink="/notifications" routerLinkActive="active">My Notifications</a>
       </nav>
     </aside>
     <main class="col-lg-10 p-0">
       <header class="bg-white border-bottom p-3 d-flex justify-content-between align-items-center">
         <span class="fw-semibold">Employee Learning Management System</span>
-        <button class="btn btn-sm btn-outline-secondary" type="button" (click)="logout()">Logout</button>
+        <div class="d-flex align-items-center gap-2">
+          <div class="position-relative">
+            <button class="btn btn-sm btn-outline-primary position-relative" type="button" (click)="toggleNotifications()">
+              My Notifications
+              <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" *ngIf="notificationSummary.unread">{{ notificationSummary.unread }}</span>
+            </button>
+            <div class="notification-menu shadow-sm" *ngIf="notificationOpen">
+              <div class="d-flex justify-content-between align-items-center mb-2">
+                <strong>Notifications</strong>
+                <button class="btn btn-sm btn-link p-0" type="button" (click)="markAllRead()" [disabled]="!notificationSummary.unread">Mark all read</button>
+              </div>
+              <div class="list-group list-group-flush">
+                <button class="list-group-item list-group-item-action px-0" type="button" *ngFor="let item of recentNotifications" (click)="markRead(item)">
+                  <div class="d-flex justify-content-between gap-2">
+                    <span class="fw-semibold">{{ item.subject }}</span>
+                    <span class="badge bg-primary" *ngIf="!item.read">Unread</span>
+                  </div>
+                  <div class="small text-muted">{{ item.type }} | {{ item.createdAt || '-' }}</div>
+                  <div class="small">{{ notificationBody(item) }}</div>
+                </button>
+                <div class="text-muted small py-2" *ngIf="!recentNotifications.length">No notifications found.</div>
+              </div>
+              <a class="btn btn-sm btn-outline-primary w-100 mt-2" routerLink="/notifications" (click)="notificationOpen = false">View all</a>
+            </div>
+          </div>
+          <button class="btn btn-sm btn-outline-secondary" type="button" (click)="logout()">Logout</button>
+        </div>
       </header>
       <section class="p-3 p-lg-4">
         <router-outlet></router-outlet>

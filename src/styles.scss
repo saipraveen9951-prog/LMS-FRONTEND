@@ -42,6 +42,20 @@ body {
   font-weight: 600;
 }
 
+.notification-menu {
+  position: absolute;
+  right: 0;
+  top: calc(100% + .5rem);
+  width: min(360px, calc(100vw - 2rem));
+  max-height: 420px;
+  overflow: auto;
+  z-index: 1050;
+  background: #fff;
+  border: 1px solid #dee2e6;
+  border-radius: .5rem;
+  padding: 1rem;
+}
+
 @media (max-width: 991.98px) {
   .sidebar {
     min-height: auto;

@@ -50,6 +50,10 @@ export class AssessmentComponent {
 
   submit(): void {
     if (!this.quiz) return;
+    if (!this.quiz.id) {
+      this.error = 'Load a quiz before submitting.';
+      return;
+    }
     const missingAnswer = (this.quiz.questions || []).some(question => question.id && !this.answers[question.id]);
     if (missingAnswer) {
       this.error = 'Answer all questions before submitting.';

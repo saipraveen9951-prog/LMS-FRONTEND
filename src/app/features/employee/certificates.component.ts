@@ -262,8 +262,9 @@ export class CertificatesComponent implements OnInit {
     const trainer = this.pdfSafe(details.trainerName);
     const date = this.pdfSafe(details.completionDate);
     const certId = this.pdfSafe(details.certificateId);
-    const titleSize = recipient.length > 28 ? 37 : 43;
-    const courseSize = course.length > 45 ? 19 : 23;
+    const titleSize = this.fitFontSize(recipient.toUpperCase(), 42, 30, 560, 'F2');
+    const courseSize = this.fitFontSize(course, 24, 16, 520, 'F2');
+    const trainerSize = this.fitFontSize(trainer, 22, 15, 190, 'F4');
 
     const line = (x1: number, y1: number, x2: number, y2: number) => `${x1} ${y1} m ${x2} ${y2} l S`;
     const rect = (x: number, y: number, w: number, h: number) => `${x} ${y} ${w} ${h} re S`;
@@ -279,59 +280,71 @@ export class CertificatesComponent implements OnInit {
       ].join(' ');
     };
     const text = (value: string, x: number, y: number, size: number, font = 'F1') => `BT /${font} ${size} Tf 1 0 0 1 ${x} ${y} Tm (${this.pdfEscape(value)}) Tj ET`;
-    const centerText = (value: string, y: number, size: number, font = 'F1') => text(value, this.centerX(value, size), y, size, font);
+    const centerText = (value: string, y: number, size: number, font = 'F1') => text(value, this.centerX(value, size, font), y, size, font);
 
     const content = [
       'q',
       '1 1 1 rg 0 0 842 595 re f',
-      '0.82 0.65 0.25 RG 1.4 w',
-      rect(58, 58, 726, 479),
-      '0.72 0.78 0.86 RG 0.7 w',
+      '0.83 0.64 0.19 RG 1.8 w',
+      rect(56, 56, 730, 483),
+      '0.78 0.83 0.90 RG 0.8 w',
       rect(66, 66, 710, 463),
-      '0.07 0.20 0.36 RG 4 w',
-      line(84, 505, 150, 505), line(84, 505, 84, 440),
-      line(758, 505, 692, 505), line(758, 505, 758, 440),
-      line(84, 90, 150, 90), line(84, 90, 84, 155),
-      line(758, 90, 692, 90), line(758, 90, 758, 155),
+      '0.07 0.20 0.36 RG 3.6 w',
+      line(86, 505, 155, 505), line(86, 505, 86, 436),
+      line(756, 505, 687, 505), line(756, 505, 756, 436),
+      line(86, 92, 155, 92), line(86, 92, 86, 161),
+      line(756, 92, 687, 92), line(756, 92, 756, 161),
+      '0.83 0.64 0.19 RG 0.8 w',
+      line(82, 514, 738, 514), line(82, 78, 738, 78),
       '0.07 0.20 0.36 rg 0.07 0.20 0.36 RG',
-      circle(421, 466, 24, 'f'),
-      '0.82 0.65 0.25 RG 2 w',
-      circle(421, 466, 28, 'S'),
+      circle(421, 472, 27, 'f'),
+      '0.83 0.64 0.19 RG 2.2 w',
+      circle(421, 472, 32, 'S'),
+      '1 1 1 RG 1.1 w',
+      line(407, 470, 421, 483), line(421, 483, 435, 470), line(407, 464, 435, 464),
       '1 1 1 rg',
-      centerText('SF', 459, 17, 'F2'),
+      centerText('SF', 466, 17, 'F2'),
       '0.07 0.20 0.36 rg',
-      centerText('SKILLFORGE LMS', 435, 11, 'F2'),
+      centerText('SKILLFORGE LMS', 435, 12, 'F2'),
+      '0.45 0.33 0.12 rg',
+      centerText('Learning and Development', 421, 8, 'F1'),
       '0.01 0.05 0.12 rg',
-      centerText('CERTIFICATE OF COMPLETION', 382, 39, 'F2'),
+      centerText('CERTIFICATE OF COMPLETION', 374, 38, 'F2'),
       '0.26 0.30 0.36 rg',
-      centerText('THIS IS TO CERTIFY THAT', 344, 12, 'F3'),
+      centerText('THIS IS TO CERTIFY THAT', 335, 12, 'F3'),
       '0.70 0.74 0.80 RG 0.8 w',
-      line(210, 319, 632, 319),
+      line(225, 313, 617, 313),
       '0.48 0.33 0.08 rg',
-      centerText(recipient.toUpperCase(), 282, titleSize, 'F2'),
+      centerText(recipient.toUpperCase(), 275, titleSize, 'F2'),
       '0.70 0.74 0.80 RG 0.8 w',
-      line(210, 260, 632, 260),
+      line(225, 254, 617, 254),
       '0.26 0.30 0.36 rg',
-      centerText('HAS SUCCESSFULLY COMPLETED THE REQUIREMENTS FOR', 224, 12, 'F3'),
+      centerText('HAS SUCCESSFULLY COMPLETED THE REQUIREMENTS FOR', 218, 12, 'F3'),
       '0.01 0.05 0.12 rg',
-      centerText(course, 192, courseSize, 'F2'),
+      centerText(course, 188, courseSize, 'F2'),
       '0.01 0.05 0.12 rg',
-      text('DATE OF ISSUANCE', 318, 145, 10, 'F3'),
-      text('CERTIFICATE ID', 448, 145, 10, 'F3'),
-      text(date, 322, 126, 14, 'F2'),
-      text(certId, 445, 126, 14, 'F2'),
+      text('DATE OF ISSUANCE', 316, 141, 10, 'F3'),
+      text('CERTIFICATE ID', 450, 141, 10, 'F3'),
+      text(date, 320, 122, 13, 'F2'),
+      text(certId, 446, 122, 13, 'F2'),
       '0.01 0.05 0.12 rg',
-      text(trainer, 116, 112, 22, 'F4'),
-      '0 0 0 RG 0.8 w',
-      line(112, 102, 282, 102),
-      text('Trainer Signature', 115, 86, 10, 'F3'),
-      text('Employee Learning Management System', 115, 72, 10, 'F1'),
-      '0.82 0.65 0.25 RG 2 w',
-      circle(662, 118, 43, 'S'),
-      circle(662, 118, 34, 'S'),
+      text(trainer, 106, 116, trainerSize, 'F4'),
+      '0.28 0.31 0.34 RG 0.8 w',
+      line(104, 104, 292, 104),
+      text('Trainer Signature', 111, 88, 10, 'F3'),
+      text('SkillForge LMS', 111, 74, 10, 'F1'),
+      '0.83 0.64 0.19 RG 2.2 w',
+      circle(662, 124, 48, 'S'),
+      circle(662, 124, 37, 'S'),
       '0.07 0.20 0.36 rg',
-      text('COMPANY', 643, 123, 9, 'F2'),
-      text('SEAL', 653, 107, 9, 'F2'),
+      circle(662, 124, 25, 'f'),
+      '1 1 1 rg',
+      text('SF', 654, 128, 15, 'F2'),
+      '0.83 0.64 0.19 rg',
+      text('VERIFIED', 641, 112, 8, 'F3'),
+      '0.07 0.20 0.36 rg',
+      text('SKILLFORGE', 630, 181, 9, 'F2'),
+      text('OFFICIAL SEAL', 628, 65, 9, 'F2'),
       'Q'
     ].join('\n');
 
@@ -361,8 +374,21 @@ export class CertificatesComponent implements OnInit {
     return value.trim().toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '') || 'certificate';
   }
 
-  private centerX(value: string, size: number): number {
-    return Math.max(70, 421 - value.length * size * 0.25);
+  private centerX(value: string, size: number, font = 'F1'): number {
+    return Math.max(70, 421 - this.textWidth(value, size, font) / 2);
+  }
+
+  private fitFontSize(value: string, maxSize: number, minSize: number, maxWidth: number, font = 'F1'): number {
+    let size = maxSize;
+    while (size > minSize && this.textWidth(value, size, font) > maxWidth) {
+      size -= 1;
+    }
+    return size;
+  }
+
+  private textWidth(value: string, size: number, font = 'F1'): number {
+    const factor = font === 'F4' ? 0.42 : font === 'F2' ? 0.53 : 0.5;
+    return value.length * size * factor;
   }
 
   private createPdf(content: string, pageWidth: number, pageHeight: number): Uint8Array {

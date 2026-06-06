@@ -6,19 +6,36 @@
 
 <div class="row g-3">
   <div class="col-lg-7">
+    <form class="content-card mb-3" [formGroup]="moduleForm">
+      <h3 class="h5">Course Module</h3>
+      <div class="row g-3">
+        <div class="col-md-6">
+          <label class="form-label" for="courseId">Course</label>
+          <select id="courseId" class="form-select" formControlName="courseId" (change)="loadModules()">
+            <option [ngValue]="null">Select course</option>
+            <option *ngFor="let course of courses" [ngValue]="course.id">{{ course.title }}</option>
+          </select>
+        </div>
+        <div class="col-md-6">
+          <label class="form-label" for="moduleId">Module</label>
+          <select id="moduleId" class="form-select" formControlName="moduleId" (change)="selectModule()" [disabled]="!modules.length">
+            <option [ngValue]="null">Select module</option>
+            <option *ngFor="let module of modules" [ngValue]="moduleId(module)">{{ moduleTitle(module) }}</option>
+          </select>
+        </div>
+      </div>
+      <div class="text-danger small mt-2" *ngIf="moduleForm.controls.courseId.value && !modules.length">No modules found for this course.</div>
+    </form>
+
     <form class="content-card" [formGroup]="quizForm" (ngSubmit)="submit()">
-      <h3 class="h5">Create Quiz</h3>
+      <h3 class="h5">{{ editingQuizId ? 'Edit Quiz' : 'Create Quiz' }}</h3>
 
       <div class="row g-3">
-        <div class="col-md-4">
-          <label class="form-label">Course Module ID</label>
-          <input class="form-control" type="number" formControlName="courseModuleId">
-        </div>
-        <div class="col-md-5">
+        <div class="col-md-8">
           <label class="form-label">Title</label>
           <input class="form-control" formControlName="title">
         </div>
-        <div class="col-md-3">
+        <div class="col-md-4">
           <label class="form-label">Passing Score</label>
           <input class="form-control" type="number" formControlName="passingScore">
         </div>
@@ -48,35 +65,41 @@
                 <input class="form-check-input mt-0" type="radio" [name]="'correct-' + questionIndex" [checked]="option.value.correct" (change)="markCorrect(questionIndex, optionIndex)" aria-label="Correct option">
               </div>
               <input class="form-control" formControlName="text" [placeholder]="'Option ' + (optionIndex + 1)">
+              <button class="btn btn-outline-danger" type="button" (click)="removeOption(questionIndex, optionIndex)" [disabled]="options(questionIndex).length <= 2">Remove</button>
             </div>
+            <button class="btn btn-sm btn-outline-secondary" type="button" (click)="addOption(questionIndex)">Add Option</button>
           </div>
         </div>
       </div>
 
       <button class="btn btn-outline-secondary me-2" type="button" (click)="addQuestion()">Add Question</button>
-      <button class="btn btn-primary" type="submit">Create Quiz</button>
+      <button class="btn btn-primary me-2" type="submit" [disabled]="moduleForm.invalid">{{ editingQuizId ? 'Update Quiz' : 'Create Quiz' }}</button>
+      <button class="btn btn-outline-secondary" type="button" *ngIf="editingQuizId" (click)="cancelEdit()">Cancel</button>
     </form>
   </div>
 
   <div class="col-lg-5">
-    <form class="content-card mb-3" [formGroup]="lookupForm" (ngSubmit)="listQuizzes()">
-      <h3 class="h5">List Quizzes By Module</h3>
-      <label class="form-label">Course Module ID</label>
-      <div class="input-group">
-        <input class="form-control" type="number" formControlName="moduleId">
-        <button class="btn btn-primary" type="submit">Load</button>
-      </div>
-    </form>
-
     <div class="content-card">
-      <h3 class="h5">Quizzes</h3>
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h3 class="h5 mb-0">Quizzes</h3>
+        <button class="btn btn-sm btn-outline-secondary" type="button" (click)="listQuizzes()" [disabled]="!moduleForm.value.moduleId">Refresh</button>
+      </div>
       <div class="list-group">
         <div class="list-group-item" *ngFor="let quiz of quizzes">
-          <div class="fw-semibold">{{ quiz.title }}</div>
-          <div class="small text-muted">ID: {{ quiz.id }} | Passing Score: {{ quiz.passingScore }}%</div>
+          <div class="d-flex justify-content-between gap-2">
+            <div>
+              <div class="fw-semibold">{{ quiz.title }}</div>
+              <div class="small text-muted">ID: {{ quiz.id }} | Passing Score: {{ quiz.passingScore }}%</div>
+            </div>
+            <div class="text-nowrap">
+              <button class="btn btn-sm btn-outline-primary me-1" type="button" (click)="editQuiz(quiz)">View/Edit</button>
+              <button class="btn btn-sm btn-outline-danger" type="button" (click)="deleteQuiz(quiz)">Delete</button>
+            </div>
+          </div>
           <div class="small">{{ quiz.description }}</div>
         </div>
-        <div class="text-muted" *ngIf="!quizzes.length">No quizzes loaded.</div>
+        <div class="text-muted" *ngIf="!moduleForm.value.moduleId">Select a course and module to load quizzes.</div>
+        <div class="text-muted" *ngIf="moduleForm.value.moduleId && !quizzes.length">No quizzes found for this module.</div>
       </div>
     </div>
   </div>

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { CertificateCourseOption, CertificateDetails, CertificateGenerationResponse, Course, CourseModule, DashboardSummary, Department, Enrollment, Quiz, QuizSubmissionResult, User } from '../../models/api.models';
+import { CertificateCourseOption, CertificateDetails, CertificateGenerationResponse, Course, CourseModule, DashboardSummary, Department, Enrollment, NotificationRecord, NotificationRequest, NotificationStatus, NotificationSummary, Quiz, QuizSubmissionResult, User } from '../../models/api.models';
 import { ApiService } from './api.service';
 
 @Injectable({ providedIn: 'root' })
@@ -33,7 +33,9 @@ export class LmsApiService {
   updateProgress(body: { enrollmentId: number; completedModules: number }): Observable<Enrollment> { return this.api.put('employee/enrollments/progress', body); }
 
   createQuiz(body: Quiz): Observable<Quiz> { return this.api.post('trainer/quizzes', body); }
-  getQuizzesByModule(moduleId: number): Observable<Quiz[]> { return this.api.get(`quizzes/${moduleId}`); }
+  updateQuiz(id: number, body: Quiz): Observable<Quiz> { return this.api.put(`trainer/quizzes/${id}`, body); }
+  deleteQuiz(id: number): Observable<void> { return this.api.delete(`trainer/quizzes/${id}`); }
+  getQuizzesByModule(moduleId: number): Observable<Quiz[]> { return this.api.get(`trainer/modules/${moduleId}/quizzes`); }
   getQuiz(quizId: number): Observable<Quiz> { return this.api.get(`quizzes/detail/${quizId}`); }
   submitQuiz(body: { quizId: number; employeeEmail: string | null; answers: Record<number, number> }): Observable<QuizSubmissionResult> {
     return this.api.post('employee/quizzes/submissions', body);
@@ -55,8 +57,28 @@ export class LmsApiService {
     return this.api.post(`employee/certificates/generate/${enrollmentId}`, {});
   }
 
-  sendNotification(body: { subject: string; message: string; role?: string }): Observable<unknown> {
+  sendNotification(body: NotificationRequest): Observable<NotificationRecord[]> {
     return this.api.post('admin/notifications/send', body);
+  }
+
+  getAdminNotifications(status?: NotificationStatus): Observable<NotificationRecord[]> {
+    return this.api.get(status ? `admin/notifications?status=${status}` : 'admin/notifications');
+  }
+
+  getNotifications(unreadOnly = false): Observable<NotificationRecord[]> {
+    return this.api.get(`notifications?unreadOnly=${unreadOnly}`);
+  }
+
+  getNotificationSummary(): Observable<NotificationSummary> {
+    return this.api.get('notifications/summary');
+  }
+
+  markNotificationRead(id: number): Observable<NotificationRecord> {
+    return this.api.patch(`notifications/${id}/read`, {});
+  }
+
+  markAllNotificationsRead(): Observable<unknown> {
+    return this.api.patch('notifications/read-all', {});
   }
 
   getEmployeeReport(employeeId: number): Observable<unknown> { return this.api.get(`admin/reports/employee/${employeeId}`); }

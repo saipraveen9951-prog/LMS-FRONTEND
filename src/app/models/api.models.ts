@@ -43,6 +43,8 @@ export interface Course {
 
 export interface CourseModule {
   id?: number;
+  moduleId?: number;
+  courseModuleId?: number;
   title: string;
   description?: string;
   sequenceOrder?: number;
@@ -72,7 +74,7 @@ export interface DashboardSummary {
 }
 
 export interface Quiz {
-  id: number;
+  id?: number;
   title?: string;
   description?: string;
   passingScore?: number;
@@ -122,4 +124,41 @@ export interface CertificateGenerationResponse {
   certificateId?: number | string;
   downloadUrl?: string;
   pdfUrl?: string;
+}
+
+export type NotificationType = 'ENROLLMENT' | 'REMINDER' | 'COMPLETION' | 'CERTIFICATE';
+export type NotificationStatus = 'PENDING' | 'SENT' | 'FAILED';
+
+export interface NotificationRequest {
+  recipientEmail?: string;
+  recipientEmails?: string[];
+  role?: Role;
+  sendToAll?: boolean;
+  subject: string;
+  message?: string;
+  body?: string;
+  type: NotificationType;
+  emailEnabled: boolean;
+}
+
+export interface NotificationRecord {
+  id: number;
+  recipientEmail: string;
+  recipientName?: string | null;
+  subject: string;
+  body?: string;
+  message?: string;
+  type: NotificationType;
+  status: NotificationStatus;
+  emailEnabled: boolean;
+  failureReason?: string | null;
+  createdAt?: string;
+  sentAt?: string | null;
+  readAt?: string | null;
+  read: boolean;
+}
+
+export interface NotificationSummary {
+  total: number;
+  unread: number;
 }

@@ -20,6 +20,7 @@ const routes: Routes = [
       { path: 'courses', loadComponent: () => import('./features/courses/courses.component').then(m => m.CoursesComponent) },
       { path: 'trainer/upload', canActivate: [AuthGuard], data: { roles: ['TRAINER'] }, loadComponent: () => import('./features/trainer/upload.component').then(m => m.UploadComponent) },
       { path: 'trainer/assessments', canActivate: [AuthGuard], data: { roles: ['ADMIN', 'TRAINER'] }, loadComponent: () => import('./features/trainer/quiz-builder.component').then(m => m.QuizBuilderComponent) },
+      { path: 'notifications', canActivate: [AuthGuard], data: { roles: ['ADMIN', 'TRAINER', 'EMPLOYEE'] }, loadComponent: () => import('./features/notifications/notification-inbox.component').then(m => m.NotificationInboxComponent) },
       { path: 'employee', canActivate: [AuthGuard], data: { roles: ['EMPLOYEE'] }, loadComponent: () => import('./features/employee/employee-dashboard.component').then(m => m.EmployeeDashboardComponent) },
       { path: 'assessments', canActivate: [AuthGuard], data: { roles: ['EMPLOYEE'] }, loadComponent: () => import('./features/employee/assessment.component').then(m => m.AssessmentComponent) },
       { path: 'certificates', canActivate: [AuthGuard], data: { roles: ['EMPLOYEE'] }, loadComponent: () => import('./features/employee/certificates.component').then(m => m.CertificatesComponent) }
@@ -29,7 +30,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes)],
+  imports: [RouterModule.forRoot(routes, { useHash: true })],
   exports: [RouterModule]
 })
 export class AppRoutingModule {}
